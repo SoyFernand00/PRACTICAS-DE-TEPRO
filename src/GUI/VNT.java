@@ -2,11 +2,18 @@ package GUI;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.TextArea;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import hijo.auto;
+import hijo.camion;
+import hijo.moto;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -19,17 +26,15 @@ public class VNT extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JLabel lblNewLabel;
-	private JScrollPane scrollPane;
-	private JTextArea textArea;
 	private JTextField texttipo;
 	private JButton btnNewButton;
 	private JLabel lblMarca;
 	private JTextField textmarca;
-	private JTextArea textArea_1;
 	private JLabel lblModelo;
 	private JTextField textmodelo;
 	private JLabel lblVelocidad;
 	private JTextField textveloz;
+	private JTextArea txtArea;
 
 	/**
 	 * Launch the application.
@@ -64,15 +69,6 @@ public class VNT extends JFrame implements ActionListener {
 			contentPane.add(lblNewLabel);
 		}
 		{
-			scrollPane = new JScrollPane();
-			scrollPane.setBounds(22, 156, 402, 155);
-			contentPane.add(scrollPane);
-			{
-				textArea_1 = new JTextArea();
-				scrollPane.setViewportView(textArea_1);
-			}
-		}
-		{
 			texttipo = new JTextField();
 			texttipo.setBounds(49, 8, 86, 20);
 			contentPane.add(texttipo);
@@ -96,13 +92,8 @@ public class VNT extends JFrame implements ActionListener {
 			contentPane.add(textmarca);
 		}
 		{
-			textArea = new JTextArea();
-			textArea.setBounds(22, 166, 400, 145);
-			contentPane.add(textArea);
-		}
-		{
 			lblModelo = new JLabel("Modelo");
-			lblModelo.setBounds(22, 40, 46, 14);
+			lblModelo.setBounds(10, 40, 46, 14);
 			contentPane.add(lblModelo);
 		}
 		{
@@ -122,6 +113,13 @@ public class VNT extends JFrame implements ActionListener {
 			textveloz.setBounds(201, 37, 86, 20);
 			contentPane.add(textveloz);
 		}
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(33, 171, 381, 140);
+		contentPane.add(scrollPane);
+		
+		txtArea = new JTextArea();
+		scrollPane.setViewportView(txtArea);
 
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -130,11 +128,46 @@ public class VNT extends JFrame implements ActionListener {
 		}
 	}
 	protected void do_btnNewButton_actionPerformed(ActionEvent e) {
-		String tipo=texttipo.getText();
-		String marca=textmarca.getText();
-		String mode=textmodelo.getText();
-		Double veloz=Double.parseDouble(textveloz.getText());
-		
-		
+		try {
+			String tipo=texttipo.getText().toLowerCase();
+			String marca=textmarca.getText().toLowerCase();
+			String mode=textmodelo.getText().toLowerCase();
+			String txtVeloz = textveloz.getText().trim();
+			String salida = "";
+			if(tipo.isEmpty() || marca.isEmpty()||mode.isEmpty()||txtVeloz.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Ingrese datos en las casillas");
+				
+			}else {
+				Double veloz = Double.parseDouble(txtVeloz);	
+				if(!tipo.equals("auto")&&!tipo.equals("moto")&&!tipo.equals("camion")) {
+				JOptionPane.showMessageDialog(null, "Ingrese bien el tipo de vehiculo");
+			}else {
+				switch (tipo) {
+				case "auto": 
+					auto auto=new auto(marca, mode, veloz);
+				    salida += auto.Mensaje() +"\n";
+					break;
+				case "moto":
+					moto moto=new moto(marca, mode, veloz);
+					salida += moto.Mensaje()+ "\n";
+					break;
+				
+				case "camion":
+					camion camion=new camion(marca, mode, veloz);
+					salida += camion.Mensaje()+"\n";
+					break;
+				}
+				txtArea.append(salida);
+			}
+			}
+		} catch (NumberFormatException e2) {
+
+	        JOptionPane.showMessageDialog(null,"Ingrese un número válido en velocidad","ADVERTENCIA",JOptionPane.WARNING_MESSAGE);
+
+	    } catch (Exception e2) {
+
+	        JOptionPane.showMessageDialog(null,"Error inesperado","ADVERTENCIA",JOptionPane.WARNING_MESSAGE
+	        );
+	    }
 	}
 }
